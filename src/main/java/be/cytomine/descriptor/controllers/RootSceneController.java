@@ -2,7 +2,6 @@ package be.cytomine.descriptor.controllers;
 
 import be.cytomine.descriptor.data.JobParameter;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
-import java.lang.reflect.Parameter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -39,7 +37,7 @@ public class RootSceneController implements Initializable {
     @FXML public Label paramIdLabel;
     @FXML public TextField paramIdField;
     @FXML public Label paramTypeLabel;
-    @FXML public ComboBox<String> paramNameCombo;
+    @FXML public ComboBox<String> paramTypeCombo;
     @FXML public Label paramDefaultLabel;
     @FXML public TextField paramDefaultField;
     @FXML public Label optionalLabel;
@@ -52,7 +50,7 @@ public class RootSceneController implements Initializable {
     @FXML public TextArea paramDescField;
     @FXML public Button addParamButton;
     @FXML public Button editParamButton;
-    @FXML public Button clearFieldsButton;
+    @FXML public Button clearParamFieldsButton;
     @FXML public TableView<JobParameter> paramTable;
     @FXML public TableColumn<JobParameter, String> idColumn;
     @FXML public TableColumn<JobParameter, String> nameColumn;
@@ -92,7 +90,34 @@ public class RootSceneController implements Initializable {
 
         types = FXCollections.observableArrayList();
         types.addAll("Number", "String", "Boolean", "Domain", "ListDomain", "Date");
-        paramNameCombo.setItems(types);
+        paramTypeCombo.setItems(types);
+
+        // buttons
+        addParamButton.setText("Add");
+        editParamButton.setText("Edit");
+        clearParamFieldsButton.setText("Clear");
+
+        addParamButton.setOnMouseClicked(event -> {
+            parameters.add(
+            new JobParameter(
+                paramIdField.getText().trim(),
+                paramNameField.getText().trim(),
+                paramDescField.getText().trim(),
+                paramTypeCombo.getSelectionModel().getSelectedItem(),
+                paramDefaultField.getText().trim(),
+                optionalCheckBox.isSelected(),
+                setByServerCheckBox.isSelected()
+            ));
+            clearParamFields();
+        });
+
+        paramTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            editParamButton.setDisable(newValue != null);
+        });
+
+        clearParamFieldsButton.setOnMouseClicked(event -> {
+            clearParamFields();
+        });
 
         // table
         parameters = FXCollections.observableArrayList();
@@ -126,5 +151,15 @@ public class RootSceneController implements Initializable {
         optionalColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(1));
         setByServerColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(1));
 
+    }
+
+    private void clearParamFields() {
+        paramIdField.setText("");
+        paramDefaultField.setText("");
+        paramNameField.setText("");
+        paramDescField.setText("");
+        paramTypeCombo.getSelectionModel().clearSelection();
+        optionalCheckBox.setSelected(false);
+        setByServerCheckBox.setSelected(false);
     }
 }
