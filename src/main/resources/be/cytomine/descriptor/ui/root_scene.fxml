@@ -143,9 +143,10 @@
                 </padding></CheckBox>
             <ButtonBar GridPane.columnIndex="0" GridPane.rowIndex="17" GridPane.columnSpan="4">
                 <buttons>
-                    <Button fx:id="addParamButton"></Button>
-                    <Button fx:id="editParamButton"></Button>
-                    <Button fx:id="clearParamFieldsButton"></Button>
+                    <Button fx:id="addParamButton"/>
+                    <Button fx:id="editParamButton"/>
+                    <Button fx:id="removeParamButton"/>
+                    <Button fx:id="clearParamFieldsButton"/>
                 </buttons>
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

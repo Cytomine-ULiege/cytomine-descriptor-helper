@@ -1,6 +1,7 @@
 package be.cytomine.descriptor.controllers;
 
 import be.cytomine.descriptor.data.JobParameter;
+import be.cytomine.descriptor.util.AlertHelper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -11,6 +12,8 @@ import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static be.cytomine.descriptor.util.AlertHelper.*;
 
 /**
  * Created by Romain on 12-11-18.
@@ -50,6 +53,7 @@ public class RootSceneController implements Initializable {
     @FXML public TextArea paramDescField;
     @FXML public Button addParamButton;
     @FXML public Button editParamButton;
+    @FXML public Button removeParamButton;
     @FXML public Button clearParamFieldsButton;
     @FXML public TableView<JobParameter> paramTable;
     @FXML public TableColumn<JobParameter, String> idColumn;
@@ -60,6 +64,8 @@ public class RootSceneController implements Initializable {
     @FXML public TableColumn<JobParameter, Boolean> optionalColumn;
     @FXML public TableColumn<JobParameter, Boolean> setByServerColumn;
 
+
+    private static int PARAM_TABLE_FROZEN_ROWS_COUNT = 5;
     private ObservableList<String> types;
     private ObservableList<JobParameter> parameters;
 
@@ -95,24 +101,51 @@ public class RootSceneController implements Initializable {
         // buttons
         addParamButton.setText("Add");
         editParamButton.setText("Edit");
-        clearParamFieldsButton.setText("Clear");
+        removeParamButton.setText("Delete");
+        clearParamFieldsButton.setText("Clear form");
 
         addParamButton.setOnMouseClicked(event -> {
-            parameters.add(
-            new JobParameter(
-                paramIdField.getText().trim(),
-                paramNameField.getText().trim(),
-                paramDescField.getText().trim(),
-                paramTypeCombo.getSelectionModel().getSelectedItem(),
-                paramDefaultField.getText().trim(),
-                optionalCheckBox.isSelected(),
-                setByServerCheckBox.isSelected()
-            ));
+            JobParameter jobParameter = new JobParameter(
+                    trimornull(paramIdField.getText()),
+                    trimornull(paramNameField.getText()),
+                    trimornull(paramDescField.getText()),
+                    paramTypeCombo.getSelectionModel().getSelectedItem(),
+                    trimornull(paramDefaultField.getText()),
+                    optionalCheckBox.isSelected(),
+                    setByServerCheckBox.isSelected()
+            );
+
+            if (nullorempty(jobParameter.getId()) || nullorempty(jobParameter.getName()) || nullorempty(jobParameter.getType())) {
+                AlertHelper.popAlert(Alert.AlertType.WARNING, "Add parameter", "Invalid field", "One of the parameter field {id, name, type} is invalid.", true);
+                return;
+            }
+            parameters.add(jobParameter);
             clearParamFields();
         });
 
-        paramTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            editParamButton.setDisable(newValue != null);
+        editParamButton.setDisable(true);
+        editParamButton.setOnMouseClicked(event -> {
+            JobParameter selectedItem = paramTable.getSelectionModel().getSelectedItem();
+            if (selectedItem == null) {
+                return;
+            }
+
+            paramIdField.setText(selectedItem.getId());
+            paramNameField.setText(selectedItem.getName());
+            paramDescField.setText(selectedItem.getDescription());
+            paramTypeCombo.getSelectionModel().select(selectedItem.getType());
+            paramDefaultField.setText(selectedItem.getDefaultValue());
+            optionalCheckBox.setSelected(selectedItem.getOptional());
+            setByServerCheckBox.setSelected(selectedItem.getSetByServer());
+            int index = paramTable.getSelectionModel().getSelectedIndex();
+            paramTable.getSelectionModel().select(-1);
+            parameters.remove(index);
+        });
+
+        removeParamButton.setOnMouseClicked(event -> {
+            int index = paramTable.getSelectionModel().getSelectedIndex();
+            paramTable.getSelectionModel().select(-1);
+            parameters.remove(index);
         });
 
         clearParamFieldsButton.setOnMouseClicked(event -> {
@@ -123,6 +156,9 @@ public class RootSceneController implements Initializable {
         parameters = FXCollections.observableArrayList();
         parameters.addAll(JobParameter.getDefaultCytomineParameters());
         paramTable.setItems(parameters);
+        paramTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            editParamButton.setDisable(paramTable.getSelectionModel().getSelectedIndex() < PARAM_TABLE_FROZEN_ROWS_COUNT);
+        });
 
         // columns names
         idColumn.setText("Id");
@@ -161,5 +197,13 @@ public class RootSceneController implements Initializable {
         paramTypeCombo.getSelectionModel().clearSelection();
         optionalCheckBox.setSelected(false);
         setByServerCheckBox.setSelected(false);
+    }
+
+    private static String trimornull(String s) {
+        return s == null ? null : s.trim();
+    }
+
+    private static boolean nullorempty(String s) {
+        return s == null || s.isEmpty();
     }
 }
