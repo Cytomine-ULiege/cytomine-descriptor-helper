@@ -15,8 +15,8 @@ import javafx.util.Pair;
  * This is THE (main) class.
  */
 public class Main extends Application {
-    private static String ROOT_FXML = "/be/cytomine/descriptor/util/root_scene.fxml";
-    private static String STYLE_CSS = "/be/cytomine/descriptor/util/style.css";
+    private static String ROOT_FXML = "/be/cytomine/descriptor/ui/root_scene.fxml";
+    private static String STYLE_CSS = "/be/cytomine/descriptor/ui/style.css";
 
     public static void main(String[] args) {
         launch(args);

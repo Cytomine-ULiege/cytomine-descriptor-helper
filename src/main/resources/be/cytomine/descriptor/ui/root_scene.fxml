@@ -1,14 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="be.cytomine.descriptor.controllers.RootSceneController"
-            prefHeight="400.0" prefWidth="600.0">
+<BorderPane prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.cytomine.descriptor.controllers.RootSceneController">
+    <top>
+        <Label fx:id="titleLabel" text="Label" BorderPane.alignment="CENTER" />
+    </top>
+    <center>
+        <GridPane hgap="5" vgap="5" BorderPane.alignment="CENTER">
+            <Label fx:id="softwareNameLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding></Label>
+            <TextField fx:id="softwareNameField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="0">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding></TextField>
+            <Label fx:id="dockerhubLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></Label>
+            <TextField fx:id="dockerhubField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></TextField>
+            <Label fx:id="prefixLabel" minWidth="50" GridPane.columnIndex="0" GridPane.rowIndex="2">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding></Label>
+            <TextField fx:id="prefixField" minWidth="50" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding></TextField>
+            <Label fx:id="schemaVersionLabel" minWidth="100" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></Label>
+            <TextField fx:id="schemaVersionField" minWidth="250" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></TextField>
+            <Label fx:id="descriptionLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></Label>
+            <TextArea fx:id="descriptionField" minWidth="300" maxHeight="60" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="3"  GridPane.rowSpan="2" wrapText="true"/>
 
-</AnchorPane>
+            <Label fx:id="cliPythonLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></Label>
+            <TextField fx:id="cliPythonField" minWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.columnSpan="3">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></TextField>
+            <Label fx:id="cliScriptLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="6">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></Label>
+            <TextField fx:id="cliScriptField" minWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.columnSpan="3">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></TextField>
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+        </GridPane>
+    </center>
+    <bottom>
+
+    </bottom>
+</BorderPane>
