@@ -1,11 +1,16 @@
 package be.cytomine.descriptor.controllers;
 
+import be.cytomine.descriptor.data.JobParameter;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
+import java.lang.reflect.Parameter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -45,8 +50,20 @@ public class RootSceneController implements Initializable {
     @FXML public TextField paramNameField;
     @FXML public Label paramDescLabel;
     @FXML public TextArea paramDescField;
+    @FXML public Button addParamButton;
+    @FXML public Button editParamButton;
+    @FXML public Button clearFieldsButton;
+    @FXML public TableView<JobParameter> paramTable;
+    @FXML public TableColumn<JobParameter, String> idColumn;
+    @FXML public TableColumn<JobParameter, String> nameColumn;
+    @FXML public TableColumn<JobParameter, String> descColumn;
+    @FXML public TableColumn<JobParameter, String> typeColumn;
+    @FXML public TableColumn<JobParameter, String> defaultValueColumn;
+    @FXML public TableColumn<JobParameter, Boolean> optionalColumn;
+    @FXML public TableColumn<JobParameter, Boolean> setByServerColumn;
 
     private ObservableList<String> types;
+    private ObservableList<JobParameter> parameters;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -77,6 +94,37 @@ public class RootSceneController implements Initializable {
         types.addAll("Number", "String", "Boolean", "Domain", "ListDomain", "Date");
         paramNameCombo.setItems(types);
 
+        // table
+        parameters = FXCollections.observableArrayList();
+        parameters.addAll(JobParameter.getDefaultCytomineParameters());
+        paramTable.setItems(parameters);
+
+        // columns names
+        idColumn.setText("Id");
+        nameColumn.setText("Name");
+        descColumn.setText("Desc.");
+        typeColumn.setText("Type");
+        defaultValueColumn.setText("Default");
+        optionalColumn.setText("Opt.");
+        setByServerColumn.setText("Server");
+
+        // columns values
+        idColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getId()));
+        nameColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getName()));
+        descColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getDescription()));
+        typeColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getType()));
+        defaultValueColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getDefaultValue()));
+        optionalColumn.setCellValueFactory(param -> new SimpleBooleanProperty(param.getValue().getOptional()));
+        setByServerColumn.setCellValueFactory(param -> new SimpleBooleanProperty(param.getValue().getSetByServer()));
+
+        // Columns widths
+        idColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(3));
+        nameColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(3));
+        descColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(4));
+        typeColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(1));
+        defaultValueColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(1));
+        optionalColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(1));
+        setByServerColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(1));
 
     }
 }

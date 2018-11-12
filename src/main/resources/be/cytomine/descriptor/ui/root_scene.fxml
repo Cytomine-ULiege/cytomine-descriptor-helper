@@ -14,7 +14,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="800.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.cytomine.descriptor.controllers.RootSceneController">
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Button?>
+<BorderPane prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.cytomine.descriptor.controllers.RootSceneController">
     <top>
         <GridPane hgap="5" vgap="5" BorderPane.alignment="CENTER">
             <Label fx:id="titleLabel" text="Label" BorderPane.alignment="CENTER" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="0">
@@ -139,13 +141,24 @@
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding></CheckBox>
-            <TableView minWidth="400" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="17">
+            <ButtonBar GridPane.columnIndex="0" GridPane.rowIndex="17" GridPane.columnSpan="4">
+                <buttons>
+                    <Button fx:id="addParamButton"></Button>
+                    <Button fx:id="editParamButton"></Button>
+                    <Button fx:id="clearFieldsButton"></Button>
+                </buttons>
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></ButtonBar>
+            <TableView fx:id="paramTable" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="17">
                 <columns>
-                    <TableColumn prefWidth="75.0" text="Column X" />
-                    <TableColumn prefWidth="75.0" text="Column X" />
-                    <TableColumn prefWidth="75.0" text="Column X" />
-                    <TableColumn prefWidth="75.0" text="Column X" />
-                    <TableColumn prefWidth="75.0" text="Column X" />
+                    <TableColumn fx:id="idColumn"/>
+                    <TableColumn fx:id="nameColumn"/>
+                    <TableColumn fx:id="descColumn"/>
+                    <TableColumn fx:id="typeColumn"/>
+                    <TableColumn fx:id="defaultValueColumn"/>
+                    <TableColumn fx:id="optionalColumn"/>
+                    <TableColumn fx:id="setByServerColumn"/>
                 </columns></TableView>
          <columnConstraints>
             <ColumnConstraints />
