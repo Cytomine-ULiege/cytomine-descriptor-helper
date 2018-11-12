@@ -1,71 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.cytomine.descriptor.controllers.RootSceneController">
+<BorderPane prefHeight="800.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.cytomine.descriptor.controllers.RootSceneController">
     <top>
-        <Label fx:id="titleLabel" text="Label" BorderPane.alignment="CENTER" />
-    </top>
-    <center>
         <GridPane hgap="5" vgap="5" BorderPane.alignment="CENTER">
-            <Label fx:id="softwareNameLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label fx:id="titleLabel" text="Label" BorderPane.alignment="CENTER" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="0">
+            <font>
+               <Font name="System Bold" size="15.0" />
+            </font></Label>
+            <Label fx:id="softwareNameLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="1">
             <padding>
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </padding></Label>
-            <TextField fx:id="softwareNameField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="0">
+            <TextField fx:id="softwareNameField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
             <padding>
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </padding></TextField>
-            <Label fx:id="dockerhubLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <Label fx:id="dockerhubLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="2">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding></Label>
-            <TextField fx:id="dockerhubField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+            <TextField fx:id="dockerhubField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding></TextField>
-            <Label fx:id="prefixLabel" minWidth="50" GridPane.columnIndex="0" GridPane.rowIndex="2">
+            <Label fx:id="prefixLabel" minWidth="50" GridPane.columnIndex="0" GridPane.rowIndex="3">
             <padding>
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </padding></Label>
-            <TextField fx:id="prefixField" minWidth="50" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <TextField fx:id="prefixField" minWidth="50" GridPane.columnIndex="1" GridPane.rowIndex="3">
             <padding>
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </padding></TextField>
-            <Label fx:id="schemaVersionLabel" minWidth="100" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <Label fx:id="schemaVersionLabel" minWidth="100" GridPane.columnIndex="2" GridPane.rowIndex="3">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding></Label>
-            <TextField fx:id="schemaVersionField" minWidth="250" GridPane.columnIndex="3" GridPane.rowIndex="2">
+            <TextField fx:id="schemaVersionField" minWidth="250" GridPane.columnIndex="3" GridPane.rowIndex="3">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding></TextField>
-            <Label fx:id="descriptionLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="3">
+            <Label fx:id="descriptionLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="4">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding></Label>
-            <TextArea fx:id="descriptionField" minWidth="300" maxHeight="60" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="3"  GridPane.rowSpan="2" wrapText="true"/>
+            <TextArea fx:id="descriptionField" maxHeight="60" minWidth="300" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.rowSpan="2" />
 
-            <Label fx:id="cliPythonLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="5">
+            <Label fx:id="cliPythonLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="6">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding></Label>
-            <TextField fx:id="cliPythonField" minWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.columnSpan="3">
+            <TextField fx:id="cliPythonField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding></TextField>
-            <Label fx:id="cliScriptLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="6">
+            <Label fx:id="cliScriptLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="7">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding></Label>
-            <TextField fx:id="cliScriptField" minWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.columnSpan="3">
+            <TextField fx:id="cliScriptField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding></TextField>
@@ -80,13 +86,114 @@
             <RowConstraints />
             <RowConstraints />
             <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
          </rowConstraints>
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </BorderPane.margin>
         </GridPane>
-    </center>
-    <bottom>
+    </top>
+    <center>
+        <GridPane hgap="5.0" vgap="5.0" BorderPane.alignment="CENTER"
+                  GridPane.hgrow="ALWAYS"
+                  GridPane.vgrow="ALWAYS">
+            <Label fx:id="editParamsTitleLabel" minWidth="100" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="0">
+            <font>
+                <Font name="System Bold" size="15.0" />
+            </font>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding></Label>
+            <Label fx:id="paramIdLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></Label>
+            <TextField fx:id="paramIdField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+           <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+           </padding></TextField>
+            <Label fx:id="paramNameLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></Label>
+            <TextField fx:id="paramNameField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></TextField>
+            <Label fx:id="paramDescLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding></Label>
+            <TextArea fx:id="paramDescField" maxHeight="60" minWidth="300" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.rowSpan="2">
+            <GridPane.margin>
+               <Insets />
+            </GridPane.margin></TextArea>
+            <Label fx:id="paramTypeLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="5">
+           <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+           </padding></Label>
+            <ComboBox fx:id="paramNameCombo" minWidth="100" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5">
+           <GridPane.margin>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+           </GridPane.margin></ComboBox>
+            <Label fx:id="paramDefaultLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="6">
+           <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+           </padding></Label>
+            <TextField fx:id="paramDefaultField" minWidth="300" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6">
+           <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+           </padding></TextField>
+            <Label fx:id="optionalLabel" minWidth="100" GridPane.columnIndex="0" GridPane.rowIndex="7">
+           <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+           </padding></Label>
+            <CheckBox fx:id="optionalCheckBox" minWidth="75" GridPane.columnIndex="1" GridPane.rowIndex="7">
+           <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+           </padding></CheckBox>
+            <Label fx:id="setByServerLabel" minWidth="150" GridPane.columnIndex="0" GridPane.rowIndex="8">
+           <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+           </padding></Label>
+            <CheckBox fx:id="setByServerCheckBox" minWidth="75" GridPane.columnIndex="1" GridPane.rowIndex="8">
+           <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+           </padding></CheckBox>
+            <TableView minWidth="400" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="10">
+                <columns>
+                    <TableColumn prefWidth="75.0" text="Column X" />
+                    <TableColumn prefWidth="75.0" text="Column X" />
+                    <TableColumn prefWidth="75.0" text="Column X" />
+                    <TableColumn prefWidth="75.0" text="Column X" />
+                    <TableColumn prefWidth="75.0" text="Column X" />
+                </columns></TableView>
+        <columnConstraints>
+           <ColumnConstraints />
+           <ColumnConstraints />
+           <ColumnConstraints />
+           <ColumnConstraints />
+        </columnConstraints>
+        <rowConstraints>
+           <RowConstraints />
+           <RowConstraints />
+           <RowConstraints />
+           <RowConstraints />
+           <RowConstraints />
+           <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+        </rowConstraints>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+        </GridPane>
 
-    </bottom>
+    </center>
 </BorderPane>
