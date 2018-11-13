@@ -112,7 +112,7 @@ public class RootSceneController implements Initializable {
 
         // buttons
         addParamButton.setText("Add");
-        editParamButton.setText("Edit");
+        editParamButton.setText("Save");
         removeParamButton.setText("Delete");
         clearParamFieldsButton.setText("Clear");
 
@@ -134,7 +134,7 @@ public class RootSceneController implements Initializable {
                 return;
             }
             int index = paramTable.getSelectionModel().getSelectedIndex();
-            parameters.set(index, parameter);
+            parameters.set(index, getParamFromFields());
         });
 
         removeParamButton.setOnMouseClicked(event -> {

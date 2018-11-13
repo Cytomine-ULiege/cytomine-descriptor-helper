@@ -148,7 +148,7 @@ public class JobParameter implements Mappable{
 
     public static JobParameter fromMap(Map<String, Object> m) {
         Object v = m.getOrDefault("default-value", null);
-        String defaultValue = v == null ? null : v.toString();
+        String defaultValue = v == null ? null : removeTrailingZeros(v.toString());
         return new JobParameter(
             (String)m.get("id"),
             (String)m.get("name"),
@@ -158,6 +158,10 @@ public class JobParameter implements Mappable{
             (Boolean)m.getOrDefault("optional", true),
             (Boolean)m.getOrDefault("set-by-server", false)
         );
+    }
+
+    private static String removeTrailingZeros(String s) {
+        return s.indexOf(".") < 0 ? s : s.replaceAll("0*$", "").replaceAll("\\.$", "");
     }
 }
 

@@ -6,9 +6,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +31,22 @@ public class Software implements Mappable {
         this.description = description ;
         this.executable = executable ;
         this.script = script ;
-        this.parameters = parameters;
+        this.parameters = checkDefaultCytomineParameters(parameters);
+    }
+
+    private List<JobParameter> checkDefaultCytomineParameters(List<JobParameter> parameters) {
+        List<JobParameter> defaultParameters = JobParameter.getDefaultCytomineParameters();
+
+        Set<String> defaultIds = new HashSet<>();
+        for (JobParameter defaultParam: defaultParameters) {
+            defaultIds.add(defaultParam.getName());
+        }
+
+        // filter default parametrs
+        defaultParameters.addAll(parameters.stream()
+                .filter(param -> !defaultIds.contains(param.getName()))
+                .collect(Collectors.toList()));
+        return defaultParameters;
     }
 
     public String getName() {
@@ -97,7 +110,7 @@ public class Software implements Mappable {
         builder.append(executable); builder.append(" ");
         builder.append(script); builder.append(" ");
         for (JobParameter param : parameters) {
-            builder.append(param.getName().toUpperCase().replace(" ", "_"));
+            builder.append(param.getId().toUpperCase());
             builder.append(" ");
         }
         return builder.toString();
@@ -134,14 +147,14 @@ public class Software implements Mappable {
                 .map(p -> JobParameter.fromMap((LinkedTreeMap<String, Object>)p))
                 .collect(Collectors.toList());
         return new Software(
-                (String)map.get("name"),
-                dockerHub,
-                prefix,
-                (String)map.get("schema-version"),
-                (String)map.getOrDefault("description", ""),
-                splittedCli[0],
-                splittedCli[1],
-                parameters
+            (String)map.get("name"),
+            dockerHub,
+            prefix,
+            (String)map.get("schema-version"),
+            (String)map.getOrDefault("description", ""),
+            splittedCli[0],
+            splittedCli[1],
+            parameters
         );
     }
 
