@@ -1,13 +1,15 @@
 package be.cytomine.descriptor.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Romain on 12-11-18.
  * This is a class.
  */
-public class JobParameter {
+public class JobParameter implements Mappable{
     private String id;
     private String name;
     private String description;
@@ -90,6 +92,25 @@ public class JobParameter {
         jobParameters.add(new JobParameter("cytomine_id_project", "Cytomine project id", "Cytomine project id", "Number", null, false, true));
         jobParameters.add(new JobParameter("cytomine_id_software", "Cytomine software id", "Cytomine software id", "Number", null, false, true));
         return jobParameters;
+    }
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("id", this.id);
+        map.put("name", this.name);
+        map.put("description", this.description);
+        map.put("type", this.type);
+        map.put("default-value", this.defaultValue);
+        map.put("optional", this.optional);
+        map.put("set-by-server", this.setByServer);
+        return map;
+    }
+
+    public Map<String, Object> toFullMap() {
+        HashMap<String, Object> map = new HashMap<>(toMap());
+        map.put("value-key", "@ID");
+        map.put("command-line-flag", "--@id");
+        return map;
     }
 }
 
