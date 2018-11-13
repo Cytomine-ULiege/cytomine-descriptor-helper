@@ -1,16 +1,27 @@
 package be.cytomine.descriptor.controllers;
 
 import be.cytomine.descriptor.data.JobParameter;
+import be.cytomine.descriptor.data.Software;
 import be.cytomine.descriptor.util.AlertHelper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import static be.cytomine.descriptor.util.AlertHelper.*;
@@ -63,6 +74,8 @@ public class RootSceneController implements Initializable {
     @FXML public TableColumn<JobParameter, String> defaultValueColumn;
     @FXML public TableColumn<JobParameter, Boolean> optionalColumn;
     @FXML public TableColumn<JobParameter, Boolean> setByServerColumn;
+    @FXML public Button generateButton;
+    @FXML public Button loadButton;
 
 
     private static int PARAM_TABLE_FROZEN_ROWS_COUNT = 5;
@@ -93,6 +106,8 @@ public class RootSceneController implements Initializable {
         paramDefaultLabel.setText("Default value");
         optionalLabel.setText("Optional");
         setByServerLabel.setText("Set-by-server");
+        generateButton.setText("Generate file");
+        loadButton.setText("Load from file");
 
         types = FXCollections.observableArrayList();
         types.addAll("Number", "String", "Boolean", "Domain", "ListDomain", "Date");
@@ -177,6 +192,29 @@ public class RootSceneController implements Initializable {
         optionalColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(1));
         setByServerColumn.prefWidthProperty().bind(paramTable.widthProperty().divide(14).multiply(1));
 
+        // export
+        loadButton.setOnMouseClicked(event -> {
+            AlertHelper.popAlert(Alert.AlertType.ERROR, "Software", "Not implemented", "Not implemented", true);
+        });
+
+        generateButton.setOnMouseClicked(event -> {
+            Software software = getSofwareFromFields();
+            Gson gson = new GsonBuilder().create();
+            String json = gson.toJson(software.toFullMap());
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setInitialFileName("descriptor.json");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", ".json"));
+            File file = fileChooser.showSaveDialog(titleLabel.getScene().getWindow());
+            try {
+                if (file != null) {
+                    try(FileOutputStream fos = new FileOutputStream(file); PrintStream ps = new PrintStream(fos)) {
+                        ps.append(json);
+                    }
+                }
+            } catch (IOException e) {
+                AlertHelper.popException(e);
+            }
+        });
     }
 
     private void clearParamFields() {
@@ -208,6 +246,19 @@ public class RootSceneController implements Initializable {
             trimornull(paramDefaultField.getText()),
             optionalCheckBox.isSelected(),
             setByServerCheckBox.isSelected()
+        );
+    }
+
+    private Software getSofwareFromFields() {
+        return new Software(
+                softwareNameField.getText(),
+                dockerhubField.getText(),
+                prefixField.getText(),
+                schemaVersionField.getText(),
+                descriptionField.getText(),
+                cliPythonField.getText(),
+                cliScriptField.getText(),
+                new ArrayList<>(parameters)
         );
     }
 

@@ -91,7 +91,7 @@ public class Software implements Mappable {
         builder.append(executable); builder.append(" ");
         builder.append(script); builder.append(" ");
         for (JobParameter param : parameters) {
-            builder.append(param.getName().toUpperCase());
+            builder.append(param.getName().toUpperCase().replace(" ", "_"));
             builder.append(" ");
         }
         return builder.toString();
