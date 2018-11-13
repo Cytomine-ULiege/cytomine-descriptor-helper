@@ -139,6 +139,7 @@ public class RootSceneController implements Initializable {
             parameters.set(index, getParamFromFields());
         });
 
+        removeParamButton.setDisable(true);
         removeParamButton.setOnMouseClicked(event -> {
             int index = paramTable.getSelectionModel().getSelectedIndex();
             paramTable.getSelectionModel().select(-1);
@@ -147,15 +148,15 @@ public class RootSceneController implements Initializable {
 
         clearParamFieldsButton.setOnMouseClicked(event -> {
             clearParamFields();
+            paramTable.getSelectionModel().select(-1);
+            setDisableEditRemoveButtons(true);
         });
 
         // table
         parameters = FXCollections.observableArrayList();
         paramTable.setItems(parameters);
         paramTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            boolean disableButtons = paramTable.getSelectionModel().getSelectedIndex() < PARAM_TABLE_FROZEN_ROWS_COUNT;
-            editParamButton.setDisable(disableButtons);
-            removeParamButton.setDisable(disableButtons);
+            setDisableEditRemoveButtons(paramTable.getSelectionModel().getSelectedIndex() < PARAM_TABLE_FROZEN_ROWS_COUNT);
             if (newValue == null) {
                 clearParamFields();
                 return;
@@ -171,6 +172,15 @@ public class RootSceneController implements Initializable {
         defaultValueColumn.setText("Default");
         optionalColumn.setText("Opt.");
         setByServerColumn.setText("Server");
+
+        // disable sorting
+        idColumn.setSortable(false);
+        nameColumn.setSortable(false);
+        descColumn.setSortable(false);
+        typeColumn.setSortable(false);
+        defaultValueColumn.setSortable(false);
+        optionalColumn.setSortable(false);
+        setByServerColumn.setSortable(false);
 
         // columns values
         idColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getId()));
@@ -212,7 +222,7 @@ public class RootSceneController implements Initializable {
 
         generateButton.setOnMouseClicked(event -> {
             Software software = getSofwareFromFields();
-            Gson gson = new GsonBuilder().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String json = gson.toJson(software.toFullMap());
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialFileName("descriptor.json");
@@ -230,6 +240,11 @@ public class RootSceneController implements Initializable {
         });
 
         initFormDefault();
+    }
+
+    private void setDisableEditRemoveButtons(boolean disable) {
+        editParamButton.setDisable(disable);
+        removeParamButton.setDisable(disable);
     }
 
     private void clearParamFields() {
