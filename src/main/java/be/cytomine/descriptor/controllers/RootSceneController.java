@@ -3,6 +3,7 @@ package be.cytomine.descriptor.controllers;
 import be.cytomine.descriptor.data.JobParameter;
 import be.cytomine.descriptor.data.Software;
 import be.cytomine.descriptor.util.AlertHelper;
+import be.cytomine.descriptor.util.StringUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 import static be.cytomine.descriptor.util.AlertHelper.*;
 
@@ -118,7 +120,7 @@ public class RootSceneController implements Initializable {
 
         addParamButton.setOnMouseClicked(event -> {
             JobParameter jobParameter = getParamFromFields();
-            if (nullorempty(jobParameter.getId()) || nullorempty(jobParameter.getName()) || nullorempty(jobParameter.getType())) {
+            if (StringUtil.nullorempty(jobParameter.getId()) || StringUtil.nullorempty(jobParameter.getName()) || StringUtil.nullorempty(jobParameter.getType())) {
                 AlertHelper.popAlert(Alert.AlertType.WARNING, "Add parameter", "Invalid field", "One of the parameter field {id, name, type} is invalid.", true);
                 return;
             }
@@ -251,12 +253,15 @@ public class RootSceneController implements Initializable {
     }
 
     private JobParameter getParamFromFields() {
+        String id = StringUtil.trimornull(paramIdField.getText());
+        String name = StringUtil.trimornull(paramNameField.getText());
+        name = name == null ? StringUtil.toUpperCaseHuman(id) : name;
         return new JobParameter(
-            trimornull(paramIdField.getText()),
-            trimornull(paramNameField.getText()),
-            trimornull(paramDescField.getText()),
+            id,
+            name,
+            StringUtil.trimornull(paramDescField.getText()),
             paramTypeCombo.getSelectionModel().getSelectedItem(),
-            trimornull(paramDefaultField.getText()),
+            StringUtil.trimornull(paramDefaultField.getText()),
             optionalCheckBox.isSelected(),
             setByServerCheckBox.isSelected()
         );
@@ -296,13 +301,5 @@ public class RootSceneController implements Initializable {
         cliScriptField.setText(software.getScript());
         parameters.setAll(software.getParameters());
         clearParamFields();
-    }
-
-    private static String trimornull(String s) {
-        return s == null ? null : s.trim();
-    }
-
-    private static boolean nullorempty(String s) {
-        return s == null || s.isEmpty();
     }
 }
