@@ -5,6 +5,7 @@ import be.cytomine.descriptor.data.Software;
 import be.cytomine.descriptor.util.AlertHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -16,12 +17,14 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import static be.cytomine.descriptor.util.AlertHelper.*;
@@ -87,17 +90,11 @@ public class RootSceneController implements Initializable {
         titleLabel.setText("Descriptor helper");
         softwareNameLabel.setText("Software name");
         prefixLabel.setText("Prefix");
-        prefixField.setText("S_");
         dockerhubLabel.setText("DockerHub");
-        dockerhubField.setText("cytomine-uliege");
         schemaVersionLabel.setText("Schema version");
-        schemaVersionField.setText("cytomine-0.1");
         descriptionLabel.setText("Description");
-        descriptionField.setText("A cytomine software ....");
         cliPythonLabel.setText("Executable");
-        cliPythonField.setText("python");
         cliScriptLabel.setText("Script");
-        cliScriptField.setText("wrapper.py");
         editParamsTitleLabel.setText("Parameters");
         paramIdLabel.setText("Id");
         paramNameLabel.setText("Name");
@@ -152,7 +149,6 @@ public class RootSceneController implements Initializable {
 
         // table
         parameters = FXCollections.observableArrayList();
-        parameters.addAll(JobParameter.getDefaultCytomineParameters());
         paramTable.setItems(parameters);
         paramTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             boolean disableButtons = paramTable.getSelectionModel().getSelectedIndex() < PARAM_TABLE_FROZEN_ROWS_COUNT;
@@ -194,7 +190,22 @@ public class RootSceneController implements Initializable {
 
         // export
         loadButton.setOnMouseClicked(event -> {
-            AlertHelper.popAlert(Alert.AlertType.ERROR, "Software", "Not implemented", "Not implemented", true);
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
+            File file = fileChooser.showOpenDialog(titleLabel.getScene().getWindow());
+            if (file == null) {
+                return;
+            }
+            try {
+                String json = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+                Gson gson = new GsonBuilder().create();
+                Type type = new TypeToken<Map<String, Object>>(){}.getType();
+                Map<String, Object> myMap = gson.fromJson(json, type);
+                Software software = Software.fromMap(myMap);
+                fillSoftwareForm(software);
+            } catch (IOException e) {
+                AlertHelper.popException(e);
+            }
         });
 
         generateButton.setOnMouseClicked(event -> {
@@ -203,7 +214,7 @@ public class RootSceneController implements Initializable {
             String json = gson.toJson(software.toFullMap());
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialFileName("descriptor.json");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", ".json"));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
             File file = fileChooser.showSaveDialog(titleLabel.getScene().getWindow());
             try {
                 if (file != null) {
@@ -215,6 +226,8 @@ public class RootSceneController implements Initializable {
                 AlertHelper.popException(e);
             }
         });
+
+        initFormDefault();
     }
 
     private void clearParamFields() {
@@ -260,6 +273,29 @@ public class RootSceneController implements Initializable {
                 cliScriptField.getText(),
                 new ArrayList<>(parameters)
         );
+    }
+    private void initFormDefault() {
+        // fields
+        prefixField.setText("S_");
+        dockerhubField.setText("cytomine-uliege");
+        schemaVersionField.setText("cytomine-0.1");
+        descriptionField.setText("A cytomine software ....");
+        cliPythonField.setText("python");
+        cliScriptField.setText("wrapper.py");
+        parameters.setAll(JobParameter.getDefaultCytomineParameters());
+        clearParamFields();
+    }
+
+    private void fillSoftwareForm(Software software) {
+        softwareNameField.setText(software.getName());
+        prefixField.setText(software.getPrefix());
+        dockerhubField.setText(software.getDockerHub());
+        schemaVersionField.setText(software.getSchemaVersion());
+        descriptionField.setText(software.getDescription());
+        cliPythonField.setText(software.getExecutable());
+        cliScriptField.setText(software.getScript());
+        parameters.setAll(software.getParameters());
+        clearParamFields();
     }
 
     private static String trimornull(String s) {

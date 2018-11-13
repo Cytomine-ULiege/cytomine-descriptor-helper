@@ -1,5 +1,11 @@
 package be.cytomine.descriptor.data;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,4 +117,35 @@ public class Software implements Mappable {
         return map;
     }
 
+    public static Software fromMap(Map<String, Object> map) {
+        // parse
+        String image = (String)((LinkedTreeMap<String, Object>)map.get("container-image")).get("image");
+        String[] splittedImage = image.split("/");
+        String dockerHub = splittedImage[0];
+        String name = (String)map.get("name");
+        String cli = (String)map.get("command-line");
+        String[] splittedCli = cli.split(" +");
+        // dirty : try to get prefix by deducing lowercased name from image name. If ill defined take two first characters of image name as prefix
+        String[] prefixOrFull = splittedImage[1].split(name.toLowerCase());
+        String prefix = prefixOrFull.length != 1 || prefixOrFull[0].length() == splittedImage[1].length() ? splittedImage[1].substring(0, 2) : prefixOrFull[0];
+
+        List<Object> mapParams = (List<Object>)map.get("inputs");
+        List<JobParameter> parameters = mapParams.stream()
+                .map(p -> JobParameter.fromMap((LinkedTreeMap<String, Object>)p))
+                .collect(Collectors.toList());
+        return new Software(
+                (String)map.get("name"),
+                dockerHub,
+                prefix,
+                (String)map.get("schema-version"),
+                (String)map.getOrDefault("description", ""),
+                splittedCli[0],
+                splittedCli[1],
+                parameters
+        );
+    }
+
+    public List<JobParameter> getParameters() {
+        return parameters;
+    }
 }

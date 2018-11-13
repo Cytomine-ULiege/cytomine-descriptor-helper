@@ -1,5 +1,12 @@
 package be.cytomine.descriptor.data;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import java.text.DateFormat;
+import java.lang.reflect.Type;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,10 +107,36 @@ public class JobParameter implements Mappable{
         map.put("name", this.name);
         map.put("description", this.description);
         map.put("type", this.type);
-        map.put("default-value", this.defaultValue);
+        addFormattedDefaultValueByType(map);
         map.put("optional", this.optional);
         map.put("set-by-server", this.setByServer);
         return map;
+    }
+
+    private void addFormattedDefaultValueByType(Map<String, Object> m) {
+        String key = "default-value";
+        if (defaultValue == null) {
+            m.put(key, null);
+            return;
+        }
+        switch(type) {
+            case "Number":
+                try {
+                    m.put(key, Integer.parseInt(defaultValue));
+                } catch (NumberFormatException e) {
+                    m.put(key, Double.parseDouble(defaultValue));
+                }
+                break;
+            case "Domain":
+                m.put(key, Integer.parseInt(defaultValue));
+                break;
+            case "Boolean":
+            case "String":
+            case "ListDomain":
+            case "Date":
+                m.put(key, defaultValue);
+                break;
+        }
     }
 
     public Map<String, Object> toFullMap() {
@@ -111,6 +144,20 @@ public class JobParameter implements Mappable{
         map.put("value-key", "@ID");
         map.put("command-line-flag", "--@id");
         return map;
+    }
+
+    public static JobParameter fromMap(Map<String, Object> m) {
+        Object v = m.getOrDefault("default-value", null);
+        String defaultValue = v == null ? null : v.toString();
+        return new JobParameter(
+            (String)m.get("id"),
+            (String)m.get("name"),
+            (String)m.getOrDefault("description", ""),
+            (String)m.get("type"),
+            defaultValue,
+            (Boolean)m.getOrDefault("optional", true),
+            (Boolean)m.getOrDefault("set-by-server", false)
+        );
     }
 }
 
