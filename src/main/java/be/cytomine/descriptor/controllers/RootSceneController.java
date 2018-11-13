@@ -102,44 +102,27 @@ public class RootSceneController implements Initializable {
         addParamButton.setText("Add");
         editParamButton.setText("Edit");
         removeParamButton.setText("Delete");
-        clearParamFieldsButton.setText("Clear form");
+        clearParamFieldsButton.setText("Clear");
 
         addParamButton.setOnMouseClicked(event -> {
-            JobParameter jobParameter = new JobParameter(
-                    trimornull(paramIdField.getText()),
-                    trimornull(paramNameField.getText()),
-                    trimornull(paramDescField.getText()),
-                    paramTypeCombo.getSelectionModel().getSelectedItem(),
-                    trimornull(paramDefaultField.getText()),
-                    optionalCheckBox.isSelected(),
-                    setByServerCheckBox.isSelected()
-            );
-
+            JobParameter jobParameter = getParamFromFields();
             if (nullorempty(jobParameter.getId()) || nullorempty(jobParameter.getName()) || nullorempty(jobParameter.getType())) {
                 AlertHelper.popAlert(Alert.AlertType.WARNING, "Add parameter", "Invalid field", "One of the parameter field {id, name, type} is invalid.", true);
                 return;
             }
             parameters.add(jobParameter);
             clearParamFields();
+            paramTable.getSelectionModel().select(parameters.size() - 1);
         });
 
         editParamButton.setDisable(true);
         editParamButton.setOnMouseClicked(event -> {
-            JobParameter selectedItem = paramTable.getSelectionModel().getSelectedItem();
-            if (selectedItem == null) {
+            JobParameter parameter = paramTable.getSelectionModel().getSelectedItem();
+            if (parameter == null) {
                 return;
             }
-
-            paramIdField.setText(selectedItem.getId());
-            paramNameField.setText(selectedItem.getName());
-            paramDescField.setText(selectedItem.getDescription());
-            paramTypeCombo.getSelectionModel().select(selectedItem.getType());
-            paramDefaultField.setText(selectedItem.getDefaultValue());
-            optionalCheckBox.setSelected(selectedItem.getOptional());
-            setByServerCheckBox.setSelected(selectedItem.getSetByServer());
             int index = paramTable.getSelectionModel().getSelectedIndex();
-            paramTable.getSelectionModel().select(-1);
-            parameters.remove(index);
+            parameters.set(index, parameter);
         });
 
         removeParamButton.setOnMouseClicked(event -> {
@@ -157,7 +140,14 @@ public class RootSceneController implements Initializable {
         parameters.addAll(JobParameter.getDefaultCytomineParameters());
         paramTable.setItems(parameters);
         paramTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            editParamButton.setDisable(paramTable.getSelectionModel().getSelectedIndex() < PARAM_TABLE_FROZEN_ROWS_COUNT);
+            boolean disableButtons = paramTable.getSelectionModel().getSelectedIndex() < PARAM_TABLE_FROZEN_ROWS_COUNT;
+            editParamButton.setDisable(disableButtons);
+            removeParamButton.setDisable(disableButtons);
+            if (newValue == null) {
+                clearParamFields();
+                return;
+            }
+            fillParamFields(newValue);
         });
 
         // columns names
@@ -197,6 +187,28 @@ public class RootSceneController implements Initializable {
         paramTypeCombo.getSelectionModel().clearSelection();
         optionalCheckBox.setSelected(false);
         setByServerCheckBox.setSelected(false);
+    }
+
+    private void fillParamFields(JobParameter parameter) {
+        paramIdField.setText(parameter.getId());
+        paramNameField.setText(parameter.getName());
+        paramDescField.setText(parameter.getDescription());
+        paramTypeCombo.getSelectionModel().select(parameter.getType());
+        paramDefaultField.setText(parameter.getDefaultValue());
+        optionalCheckBox.setSelected(parameter.getOptional());
+        setByServerCheckBox.setSelected(parameter.getSetByServer());
+    }
+
+    private JobParameter getParamFromFields() {
+        return new JobParameter(
+            trimornull(paramIdField.getText()),
+            trimornull(paramNameField.getText()),
+            trimornull(paramDescField.getText()),
+            paramTypeCombo.getSelectionModel().getSelectedItem(),
+            trimornull(paramDefaultField.getText()),
+            optionalCheckBox.isSelected(),
+            setByServerCheckBox.isSelected()
+        );
     }
 
     private static String trimornull(String s) {
