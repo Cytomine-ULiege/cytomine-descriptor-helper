@@ -11,11 +11,9 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 
 import java.io.*;
@@ -24,12 +22,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
-
-import static be.cytomine.descriptor.util.AlertHelper.*;
 
 /**
  * Created by Romain on 12-11-18.
@@ -71,6 +65,8 @@ public class RootSceneController implements Initializable {
     @FXML public Button editParamButton;
     @FXML public Button removeParamButton;
     @FXML public Button clearParamFieldsButton;
+    @FXML public Button paramUpButton;
+    @FXML public Button paramDownButton;
     @FXML public TableView<JobParameter> paramTable;
     @FXML public TableColumn<JobParameter, String> idColumn;
     @FXML public TableColumn<JobParameter, String> nameColumn;
@@ -105,7 +101,7 @@ public class RootSceneController implements Initializable {
         paramDefaultLabel.setText("Default value");
         optionalLabel.setText("Optional");
         setByServerLabel.setText("Set-by-server");
-        generateButton.setText("Generate file");
+        generateButton.setText("Save file");
         loadButton.setText("Load from file");
 
         types = FXCollections.observableArrayList();
@@ -116,7 +112,9 @@ public class RootSceneController implements Initializable {
         addParamButton.setText("Add");
         editParamButton.setText("Save");
         removeParamButton.setText("Delete");
-        clearParamFieldsButton.setText("Clear");
+        clearParamFieldsButton.setText("Clear form");
+        paramUpButton.setText("Up");
+        paramDownButton.setText("Down");
 
         addParamButton.setOnMouseClicked(event -> {
             JobParameter jobParameter = getParamFromFields();
@@ -149,14 +147,40 @@ public class RootSceneController implements Initializable {
         clearParamFieldsButton.setOnMouseClicked(event -> {
             clearParamFields();
             paramTable.getSelectionModel().select(-1);
-            setDisableEditRemoveButtons(true);
+            setDisableParamButtons(true);
+        });
+
+        paramUpButton.setDisable(true);
+        paramUpButton.setOnMouseClicked(event -> {
+            int index = paramTable.getSelectionModel().getSelectedIndex();
+            if (index <= PARAM_TABLE_FROZEN_ROWS_COUNT) {
+                return;
+            }
+            swapParamsInTable(index, index - 1);
+            paramTable.getSelectionModel().select(index - 1);
+        });
+
+        paramDownButton.setDisable(true);
+        paramDownButton.setOnMouseClicked(event -> {
+            int index = paramTable.getSelectionModel().getSelectedIndex();
+            if (index == parameters.size() - 1) {
+                return;
+            }
+            swapParamsInTable(index, index + 1);
+            paramTable.getSelectionModel().select(index + 1);
         });
 
         // table
         parameters = FXCollections.observableArrayList();
         paramTable.setItems(parameters);
         paramTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            setDisableEditRemoveButtons(paramTable.getSelectionModel().getSelectedIndex() < PARAM_TABLE_FROZEN_ROWS_COUNT);
+            setDisableParamButtons(paramTable.getSelectionModel().getSelectedIndex() < PARAM_TABLE_FROZEN_ROWS_COUNT);
+            int index = paramTable.getSelectionModel().getSelectedIndex();
+            if (index == parameters.size() - 1) {
+                paramDownButton.setDisable(true);
+            } else if (index == PARAM_TABLE_FROZEN_ROWS_COUNT) {
+                paramUpButton.setDisable(true);
+            }
             if (newValue == null) {
                 clearParamFields();
                 return;
@@ -242,9 +266,20 @@ public class RootSceneController implements Initializable {
         initFormDefault();
     }
 
-    private void setDisableEditRemoveButtons(boolean disable) {
+    private void swapParamsInTable(int row1, int row2) {
+        if (row1 < 0 && row2 >= parameters.size()) {
+            return;
+        }
+        JobParameter tmp = parameters.get(row1);
+        parameters.set(row1, parameters.get(row2));
+        parameters.set(row2, tmp);
+    }
+
+    private void setDisableParamButtons(boolean disable) {
         editParamButton.setDisable(disable);
         removeParamButton.setDisable(disable);
+        paramUpButton.setDisable(disable);
+        paramDownButton.setDisable(disable);
     }
 
     private void clearParamFields() {

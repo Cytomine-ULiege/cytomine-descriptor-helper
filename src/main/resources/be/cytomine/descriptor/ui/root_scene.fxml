@@ -146,6 +146,8 @@
                     <Button fx:id="addParamButton" />
                     <Button fx:id="editParamButton" />
                     <Button fx:id="removeParamButton" />
+                    <Button fx:id="paramUpButton"/>
+                    <Button fx:id="paramDownButton"/>
                     <Button fx:id="clearParamFieldsButton" />
                 </buttons>
                 <padding>
