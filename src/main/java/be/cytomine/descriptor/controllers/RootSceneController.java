@@ -53,6 +53,8 @@ public class RootSceneController implements Initializable {
     @FXML public ComboBox<String> paramTypeCombo;
     @FXML public Label paramDefaultLabel;
     @FXML public TextField paramDefaultField;
+    @FXML public CheckBox nullDefaultCheckBox;
+    @FXML public Label nullDefaultLabel;
     @FXML public Label optionalLabel;
     @FXML public CheckBox optionalCheckBox;
     @FXML public Label setByServerLabel;
@@ -99,6 +101,7 @@ public class RootSceneController implements Initializable {
         paramDescLabel.setText("Description");
         paramTypeLabel.setText("Type");
         paramDefaultLabel.setText("Default value");
+        nullDefaultLabel.setText("null");
         optionalLabel.setText("Optional");
         setByServerLabel.setText("Set-by-server");
         generateButton.setText("Save file");
@@ -108,6 +111,11 @@ public class RootSceneController implements Initializable {
         types = FXCollections.observableArrayList();
         types.addAll("Number", "String", "Boolean", "Domain", "ListDomain", "Date");
         paramTypeCombo.setItems(types);
+
+        // form fields
+        nullDefaultCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            paramDefaultField.setVisible(!newValue); // disable text when default value is 'null'
+        });
 
         // buttons
         addParamButton.setText("Add");
@@ -289,6 +297,7 @@ public class RootSceneController implements Initializable {
 
     private void clearParamFields() {
         paramIdField.setText("");
+        nullDefaultCheckBox.setSelected(false);
         paramDefaultField.setText("");
         paramNameField.setText("");
         paramDescField.setText("");
@@ -302,7 +311,13 @@ public class RootSceneController implements Initializable {
         paramNameField.setText(parameter.getName());
         paramDescField.setText(parameter.getDescription());
         paramTypeCombo.getSelectionModel().select(parameter.getType());
-        paramDefaultField.setText(parameter.getDefaultValue());
+        if (parameter.getDefaultValue() != null) {
+            paramDefaultField.setText(parameter.getDefaultValue());
+            nullDefaultCheckBox.setSelected(false);
+        } else {
+            paramDefaultField.setText("");
+            nullDefaultCheckBox.setSelected(true);
+        }
         optionalCheckBox.setSelected(parameter.getOptional());
         setByServerCheckBox.setSelected(parameter.getSetByServer());
     }
@@ -311,12 +326,13 @@ public class RootSceneController implements Initializable {
         String id = StringUtil.trimornull(paramIdField.getText());
         String name = StringUtil.trimornull(paramNameField.getText());
         name = name == null ? StringUtil.toUpperCaseHuman(id) : name;
+        String defaultValue = nullDefaultCheckBox.isSelected() ? null : StringUtil.trimornull(paramDefaultField.getText());
         return new JobParameter(
             id,
             name,
             StringUtil.trimornull(paramDescField.getText()),
             paramTypeCombo.getSelectionModel().getSelectedItem(),
-            StringUtil.trimornull(paramDefaultField.getText()),
+            defaultValue,
             optionalCheckBox.isSelected(),
             setByServerCheckBox.isSelected()
         );

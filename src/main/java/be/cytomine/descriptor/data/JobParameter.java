@@ -1,13 +1,6 @@
 package be.cytomine.descriptor.data;
 
 import be.cytomine.descriptor.util.StringUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import java.text.DateFormat;
-import java.lang.reflect.Type;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
