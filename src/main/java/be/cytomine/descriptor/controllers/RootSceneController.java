@@ -77,7 +77,7 @@ public class RootSceneController implements Initializable {
     @FXML public TableColumn<JobParameter, Boolean> setByServerColumn;
     @FXML public Button generateButton;
     @FXML public Button loadButton;
-
+    @FXML public Button newButton;
 
     private static int PARAM_TABLE_FROZEN_ROWS_COUNT = 5;
     private ObservableList<String> types;
@@ -103,6 +103,7 @@ public class RootSceneController implements Initializable {
         setByServerLabel.setText("Set-by-server");
         generateButton.setText("Save file");
         loadButton.setText("Load from file");
+        newButton.setText("New descriptor");
 
         types = FXCollections.observableArrayList();
         types.addAll("Number", "String", "Boolean", "Domain", "ListDomain", "Date");
@@ -261,6 +262,10 @@ public class RootSceneController implements Initializable {
             } catch (IOException e) {
                 AlertHelper.popException(e);
             }
+        });
+
+        newButton.setOnMouseClicked(event -> {
+            initFormDefault();
         });
 
         initFormDefault();

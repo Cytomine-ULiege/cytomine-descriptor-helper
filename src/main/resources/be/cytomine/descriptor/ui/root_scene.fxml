@@ -198,6 +198,7 @@
     <bottom>
         <ButtonBar>
             <buttons>
+                <Button fx:id="newButton" />
                 <Button fx:id="generateButton" />
                 <Button fx:id="loadButton" />
             </buttons>
